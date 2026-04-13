@@ -110,4 +110,4 @@ Mistras/EasyAE/old/
 *.jupyter
 
 AGENTS.md
-.jupyter_ystore.db
+*.jupyter_ystore.db
