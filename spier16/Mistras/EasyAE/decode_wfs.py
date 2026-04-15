@@ -310,12 +310,17 @@ def _parse_stream_start_sample_index(body: bytes) -> Optional[int]:
 
 def _parse_waveform_start_sample_index(body: bytes) -> Optional[int]:
     """
-    Extract the absolute stream sample pointer for one waveform record.
+    Extract the diagnostic stream sample pointer for one waveform record.
 
     In observed multi-channel WFS files, bytes 24:28 contain a per-record
     pointer that advances by 2048 counts while each waveform contains 4096
     int16 samples. Multiplying by 2 converts the stored counter into the
     same sample-index units used by the stream-start message.
+
+    This field is not reliable as a gap/overlap signal for every AEwin64
+    stream export. Some files contain large pointer jumps while AEwin64's CSV
+    output remains a sequential record stream, so load_continuous() treats this
+    as diagnostic metadata unless use_record_positions=True is requested.
     """
     if len(body) < WAVEFORM_HEADER_BYTES:
         return None
@@ -443,7 +448,8 @@ def decode_wfs(path: str | Path,
 def load_continuous(path: str | Path,
                     channel: int = 1,
                     max_records: Optional[int] = None,
-                    sample_rate_hz: Optional[int] = None):
+                    sample_rate_hz: Optional[int] = None,
+                    use_record_positions: bool = False):
     """
     Decode a .WFS file and concatenate all records into a single continuous
     time-series suitable for spectral analysis.
@@ -458,6 +464,14 @@ def load_continuous(path: str | Path,
         Stop after reading this many waveform records.
     sample_rate_hz : int, optional
         Override the sample rate found in the file (Hz).
+    use_record_positions : bool, optional
+        When False (default), concatenate waveform records in file order after
+        applying the initial AEwin64 stream-start modulo trim. This matches
+        AEwin64 CSV stream exports for observed streaming files. When True,
+        use the per-record pointer field to position records and insert any
+        implied gaps. The pointer field is retained for diagnostics, but it can
+        jump by about one second in real files without a corresponding gap in
+        AEwin64's CSV export.
 
     Returns
     -------
@@ -502,6 +516,36 @@ def load_continuous(path: str | Path,
         and all(r.start_sample_index is not None for r in records)
     )
     if have_record_positions:
+        expected_deltas = [len(rec.samples) for rec in records[:-1]]
+        actual_deltas = [
+            records[i + 1].start_sample_index - records[i].start_sample_index
+            for i in range(len(records) - 1)
+        ]
+        pointer_jumps = [
+            (i, actual, expected)
+            for i, (actual, expected) in enumerate(zip(actual_deltas, expected_deltas))
+            if actual != expected
+        ]
+        if pointer_jumps:
+            action = (
+                "using pointer-positioned reconstruction because "
+                "use_record_positions=True."
+                if use_record_positions
+                else "using file-order concatenation."
+            )
+            print(
+                "WARNING: waveform start pointers contain "
+                f"{len(pointer_jumps):,} non-sequential jump(s); {action}"
+            )
+            for i, actual, expected in pointer_jumps[:5]:
+                print(
+                    f"  pointer jump after record {i:,}: "
+                    f"delta={actual:,} samples, expected={expected:,}"
+                )
+            if len(pointer_jumps) > 5:
+                print("  ...")
+
+    if use_record_positions and have_record_positions:
         front_trim = 0
         last_end = 0
         spans = []
@@ -541,6 +585,7 @@ def load_continuous(path: str | Path,
             if start_offset:
                 raw = raw[start_offset:]
                 print(f"Applied AEwin64 stream start offset: {start_offset:,} samples")
+        print("Reconstructed continuous stream by file-order concatenation")
     t = np.linspace(pretrigger_samples / sr, (pretrigger_samples + len(raw) - 1) / sr, len(raw))
 
     print(f"Concatenated file records: {len(raw):,} samples")
