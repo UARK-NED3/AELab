@@ -111,3 +111,10 @@ Mistras/EasyAE/old/
 
 AGENTS.md
 *.jupyter_ystore.db
+
+# Local research data and generated outputs
+**/data/raw/
+**/data/processed/
+**/results/
+**/outputs/
+**/figures/generated/
