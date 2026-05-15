@@ -12,6 +12,7 @@ This repository is organized as a collaborative workspace for analysis code, tut
 | `pd-immersion-ae/` | Acoustic emission analysis for immersed partial discharge experiments. |
 | `pool-boiling-ae/` | Acoustic emission analysis for pool boiling experiments. |
 | `flow-boiling-ae/` | Acoustic emission analysis for flow boiling experiments. |
+| `ae-system/` | Sensor, data acquisition, and software notes for acoustic sensing systems used in the lab. |
 | `spier16/` | Existing notebooks, scripts, and reference materials from the initial repository. |
 
 ## Suggested Folder Pattern
