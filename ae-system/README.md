@@ -2,6 +2,10 @@
 
 This folder documents the acoustic sensing hardware, data acquisition systems, and data acquisition software used in the lab. Use it as a shared reference for students preparing experiments, interpreting datasets, or writing analysis tutorials.
 
+![AE sensing implementations for thermal and electrical systems](assets/ae-sensing-thermal-electrical-systems.jpg)
+
+The figure above summarizes how acoustic emission, hydrophone, microphone, and accelerometer sensing systems are implemented across thermal-fluid and electrical experiments in AELab.
+
 ## System Summary
 
 | System | Sensor | Data Acquisition | Software | Typical Use |
