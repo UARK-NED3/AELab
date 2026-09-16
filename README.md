@@ -11,7 +11,7 @@ This repository is organized as a collaborative workspace for analysis code, tut
 | `pd-ae/` | Acoustic emission analysis for partial discharge experiments. |
 | `pd-immersion-ae/` | Acoustic emission analysis for immersed partial discharge experiments. |
 | `pool-boiling-ae/` | Acoustic emission analysis for pool boiling experiments. |
-| `flow-boiling-ae/` | Acoustic emission analysis for flow boiling experiments. |
+| `flow-boiling-ae/` | Acoustic emission analysis for flow boiling experiments, including the [standard operating procedure](flow-boiling-ae/README.md#standard-operating-procedure) for the ENRC 3414 microchannel two-phase flow loop. |
 | `ae-system/` | Sensor, data acquisition, and software notes for acoustic sensing systems used in the lab. |
 | `spier16/` | Existing notebooks, scripts, and reference materials from the initial repository. |
 
@@ -22,6 +22,8 @@ Each project area follows the same lightweight structure:
 - `analysis/`: reusable scripts, packages, helper functions, and processing workflows.
 - `tutorials/`: Colab, Jupyter, MATLAB Live Script, or other tutorial notebooks.
 - `data/`: small metadata files and instructions for accessing external datasets.
+- `docs/`: facility documentation and standard operating procedures, where an area has a
+  dedicated experimental setup. `flow-boiling-ae/docs/` is the worked example.
 
 Avoid committing large raw data files, generated result archives, or local environment folders. Instead, document the dataset source, OSF link, expected file names, and any preprocessing steps needed to reproduce the analysis.
 
