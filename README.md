@@ -2,6 +2,9 @@
 
 Research toolkits for acoustic emission sensing for phase change processes, flows, and partial discharge.
 
+Repository scope, evidence, and reuse boundaries are also available in the
+[NED3 resource manifest](.ned3/resource-manifest-v0.1.json).
+
 This repository is organized as a collaborative workspace for analysis code, tutorial notebooks, and reproducible examples. Large experimental datasets should be stored externally, such as on OSF, and referenced from notebooks or scripts by stable download links.
 
 ## Project Areas
