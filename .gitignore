@@ -118,3 +118,6 @@ AGENTS.md
 **/results/
 **/outputs/
 **/figures/generated/
+*.png
+*.svg
+*.pptx
